@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <!-- JQUERY MOBILE SCRIPS -->
+
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <!-- END OF JQUERY -->
+    <title>Movies</title>
+    <style>
+        #container {
+            margin: 15px;
+            padding: 10px;
+        }
+        
+        form {
+            margin-top: 10%
+        }
+        
+        h2 {
+            font-family: monospace;
+            text-align: center;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        #btnSearch {
+            background: green;
+            color: rgb(211, 203, 205);
+            font-family: monospace;
+            font-weight: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <form>
+            <h2>Search using a Movie Title</h2>
+            <input type="text" id="title">
+            <button id="btnSearch">Search</button>
+        </form>
+        <div id="titleResult"></div>
+        <div id="image"><img src="" alt=""></div>
+        <div id="year"></div>
+        <div id="rating"></div>
+        <div id="release"></div>
+        <div id="genre"></div>
+        <div id="cast"></div>
+        <div id="plot"></div>
+
+
+    </div>
+
+    <script>
+        var xmlhttp;
+        //get btn search
+        let button = document.getElementById('btnSearch');
+        button.addEventListener('click', searchMovies);
+
+        //function for eventlistner
+        function searchMovies() {
+            //get title from user input
+            let title = document.getElementById('title').value;
+            //create url we are going to contact
+            var url = 'http://www.omdbapi.com/?apikey=42916bd4&t=';
+            url += title;
+            url += '&plot=full';
+            //test
+            // console.log(url);
+
+
+            //object to connect to server
+            xmlhttp = new XMLHttpRequest();
+            //make a get request to the url variable and make it async(true)
+            xmlhttp.open('get', url, true);
+            //getData function
+            xmlhttp.onreadystatechange = getData;
+            //send a request
+            xmlhttp.send();
+
+        }
+
+        function getData() {
+            //make sure readystate is 4 and status is OK, 200.
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                // Parse data to make an object
+                let response = JSON.parse(xmlhttp.responseText);
+                //get information
+                let title = response.Title;
+                let year = response.Year;
+                let rating = response.Rated;
+                let release = response.Release;
+                let genre = response.Genre;
+                let cast = response.Actors;
+                let plot = response.Plot;
+                let image = response.Poster;
+                // add info to HTML
+                document.getElementById('titleResult').innerHTML = '<h1>' + title + '</h1>'
+                document.getElementById('year').innerHTML =
+                    '<p> <strong> <strong>Year released: </strong></strong>' + year + '</p>'
+                document.getElementById('rating').innerHTML =
+                    '<p> <strong> Rating: </strong>' + rating + '</p>'
+                document.getElementById('release').innerHTML =
+                    '<p> <strong> Release: </strong>' + release + '</p>'
+                document.getElementById('genre').innerHTML =
+                    '<p> <strong> Genre: </strong>' + genre + '</p>'
+                document.getElementById('cast').innerHTML =
+                    '<p> <strong> Cast: </strong>' + cast + '</p>'
+                document.getElementById('plot').innerHTML =
+                    '<p> <strong> Plot: </strong>' + plot + '</p>'
+                document.getElementById('image').innerHTML =
+                    '<img src=' + image + '/>'
+            }
+        }
+    </script>
+    <script type="text/javascript" src="cordova.js"></script>
+
+</body>
+
+</html>
